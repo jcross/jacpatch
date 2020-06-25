@@ -1,4 +1,4 @@
-patches = $(wildcard patches/*.jacpatch)
+patches = $(wildcard patches/*.jac)
 
 all: main
 
@@ -13,3 +13,5 @@ main:
 
 run: ./bin.linux/jacpatch
 	./bin.linux/jacpatch
+
+# ln -s patches/example.jac hardInput; xxd -i hardInput > src/hardInput.h
