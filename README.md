@@ -14,9 +14,9 @@ Line 2 is the name of the target file (case sensitivity?)
 
 Example: GOT.EXE
 
-Line 3 is the md5 hash of the target file. If the target file available does not have the same hash, it's probably not the version that this patch applies to. Whoops. If we're not particular, this line may be left blank.
+Line 3 is the size of target file. If the target file available does not have the same size, it's probably not the version that this patch applies to. Whoops. If we're not particular, this line may be left blank.
 
-Example: d53b38c29d4fb8cdbbcb54c8435e4559
+Example: 389305
 
 Remaining lines should come in triplets (excluding comment lines) that define how the file should be modified while also doing some sanity checking.
 
