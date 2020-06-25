@@ -1,7 +1,7 @@
 # jacpatch
 A tool for making stand-alone binary patch programs that will run under DOS on x86 CPUs.
 
-# .jacpatch format.
+# .jac format.
 The patch files should be somewhat human readable.
 
 Fields in this format are "\n" terminated.
@@ -37,3 +37,5 @@ Example:
 78 09
 
 Triplets continue until either the end of the file or a new "JACPATCH" line is encountered. A new "JACPATCH" line indicates that we need to move on to a new file to modify.
+
+See example.jac in the patches directory for a full example.
