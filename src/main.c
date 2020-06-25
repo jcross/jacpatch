@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "tmp.h"
+#include "hardInput.h"
 
 int main()
 {
