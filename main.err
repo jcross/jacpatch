@@ -1,0 +1,36 @@
+src/main.c(1): Error! E1055: Unable to open 'stdio.h'
+src/main.c(2): Error! E1055: Unable to open 'stdlib.h'
+src/main.c(3): Error! E1055: Unable to open 'string.h'
+src/main.c(31): Error! E1112: Initializer list cannot be empty
+src/main.c(33): Warning! W131: No prototype found for function 'printf'
+src/main.c(41): Error! E1071: Type of parameter 4 does not agree with previous definition
+src/main.c(41): Note! I2003: source conversion type is 'unsigned long '
+src/main.c(41): Note! I2004: target conversion type is 'unsigned int '
+src/main.c(41): Note! I2002: 'loadHeader' defined in: src/main.c(23)
+src/main.c(44): Warning! W131: No prototype found for function 'exit'
+src/main.c(46): Warning! W131: No prototype found for function 'strncmp'
+src/main.c(59): Warning! W131: No prototype found for function 'putc'
+src/main.c(59): Error! E1011: Symbol 'stdout' has not been declared
+src/main.c(64): Warning! W131: No prototype found for function 'memset'
+src/main.c(65): Error! E1063: Missing operand
+src/main.c(65): Warning! W111: Meaningless use of an expression
+src/main.c(65): Error! E1009: Expecting ';' but found 'unsigned'
+src/main.c(65): Error! E1063: Missing operand
+src/main.c(65): Error! E1009: Expecting ';' but found 'unsigned'
+src/main.c(65): Error! E1063: Missing operand
+src/main.c(65): Warning! W111: Meaningless use of an expression
+src/main.c(65): Error! E1009: Expecting ')' but found 'unsigned'
+src/main.c(65): Error! E1077: Missing '}'
+src/main.c(65): Error! E1077: Missing '}'
+src/main.c(65): Warning! W107: Missing return value for function 'loadHeader'
+src/main.c(66): Warning! W132: No storage class or type specified
+src/main.c(66): Error! E1009: Expecting ';' but found '+'
+src/main.c(66): Error! E1061: Expecting data or function declaration, but found '+'
+src/main.c(66): Warning! W132: No storage class or type specified
+src/main.c(66): Error! E1009: Expecting ';' but found '<'
+src/main.c(66): Error! E1061: Expecting data or function declaration, but found '<'
+src/main.c(66): Warning! W132: No storage class or type specified
+src/main.c(66): Error! E1009: Expecting ';' but found '&&'
+src/main.c(66): Error! E1061: Expecting data or function declaration, but found '&&'
+src/main.c(67): Warning! W132: No storage class or type specified
+src/main.c(67): Error! E1147: Too many errors: compilation aborted

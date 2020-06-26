@@ -16,25 +16,28 @@
 
 struct header {
   unsigned char fileName[MAX_FN_LEN];
-  unsigned int fileSize;
+  unsigned long int fileSize;
   bool valid;
 };
 
 struct header loadHeader(struct header, unsigned char *,
-			 unsigned int, unsigned int);
+			 unsigned int, unsigned long int);
+
+unsigned long int skipComments(unsigned char *, unsigned int,
+			       unsigned long int);
 
 int main()
 {
   struct header head = {};
   head = loadHeader(head, hardInput, hardInput_len, 0);
   printf("Filename: %s\n", head.fileName);
-  printf("File Size: %d\n", head.fileSize);
+  printf("File Size: %lu\n", head.fileSize);
   printf("Header Valid: %d\n", head.valid);
   return SUCCESS;
 }
 
 struct header loadHeader(struct header head, unsigned char *input,
-			 unsigned int inputSize, unsigned int offset)
+			 unsigned int inputSize, unsigned long int offset)
 {
   if(inputSize - offset < MAGIC_SIZE - 1) {
     printf("Header too short! Is this really a jacpatch?\n");
@@ -45,8 +48,8 @@ struct header loadHeader(struct header head, unsigned char *input,
     exit(NO_MAGIC);
   }
 
+  // offset = skipComments(input, inputSize, offset);
   // TODO: Need something to eat comments!
-  // TODO: Need to handle running out of input.
   
   // Print the message describing the patch.
   // input[offset-1] is used because we want to gobble the newline.
@@ -75,4 +78,9 @@ struct header loadHeader(struct header head, unsigned char *input,
   return head;
 }
 
-
+unsigned long int skipComments(unsigned char *input,
+			       unsigned int inputSize,
+			       unsigned long int offset)
+{
+  return 0;
+}
