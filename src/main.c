@@ -22,7 +22,7 @@ struct header {
 
 struct header loadHeader(struct header, unsigned char *,
 			 unsigned int, unsigned int);
-
+// TODO: Look at Valgrind errors. Am I using header struct wrong?
 int main()
 {
   struct header head;
