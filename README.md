@@ -4,7 +4,7 @@ A tool for making stand-alone binary patch programs that will run under DOS on x
 # .jac format.
 The patch files should be somewhat human readable.
 
-Fields in this format are "\n" terminated.
+Lines in this format are "\n" terminated.
 
 Lines beginning with ";" are comments.
 
