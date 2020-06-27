@@ -21,6 +21,8 @@
 #define EARLY_END 3
 #define NOT_FOUND 4
 #define WRONG_SIZE 5
+#define OFFSET_OOR 6
+#define UNEXPECTED_BYTE 7
 
 struct header {
   char fileName[MAX_FN_LEN];
@@ -35,6 +37,9 @@ unsigned skipComments(unsigned char *, unsigned,
 		      unsigned);
 void checkEnd(unsigned, unsigned);
 
-unsigned applyTriplets(FILE *, unsigned char *, unsigned, unsigned);
+unsigned applyTriplets(FILE *, struct header,
+		       unsigned char *, unsigned, unsigned);
 
 FILE * openFile(struct header);
+
+int fseekAbs(FILE *, int);

@@ -10,5 +10,5 @@ GOT.EXE
 ; Segment 0 starts at 0d 20. Our code is at seg0:00 32.
 ; 0d 20 + 00 32 = 0d 52
 0d 52
-09 79
-09 eb
+79 09
+eb 09
