@@ -1,18 +1,20 @@
 patches = $(wildcard patches/*.jac)
 
-all: main
+all: dos linux
 
 clean:
 	rm -r binl
 	rm -r bind
 
-main:
+linux:
 	mkdir -p binl
-	mkdir -p bind
-	gcc src/main.c -s -Os -o binl/jacpatch
-	ia16-elf-gcc  -s -Os -march=any_186 -mtune=v20  -mcmodel=medium src/main.c -o bind/jacpatch
+	gcc src/main.c -W -Wall -s -Os -o binl/jacpatch
 
-run: ./binl/jacpatch
+dos:
+	mkdir -p bind
+	ia16-elf-gcc -W -Wall -s -Os -march=any_186 -mtune=v20  -mcmodel=medium src/main.c -o bind/jacpatch
+
+run: linux
 	./binl/jacpatch
 
 # ln -s patches/example.jac hardInput; xxd -i hardInput > src/hardInput.h

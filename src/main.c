@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "bool.h" // Bool is C99+
+#include <stdbool.h>
 #include "hardInput.h"
 
 #define MAGIC "JACPATCH"
@@ -17,28 +17,28 @@
 #define EARLY_END 3
 
 struct header {
-  unsigned char fileName[MAX_FN_LEN];
-  unsigned long int fileSize;
+  char fileName[MAX_FN_LEN];
+  unsigned fileSize;
 };
 
 struct header loadHeader(struct header, unsigned char *,
-			 unsigned int, unsigned long int);
+			 unsigned, unsigned);
 
-unsigned long int skipComments(unsigned char *, unsigned int,
-			       unsigned long int);
-void checkEnd(unsigned int, unsigned long int);
+unsigned long int skipComments(unsigned char *, unsigned,
+			       unsigned);
+void checkEnd(unsigned, unsigned);
 
 int main()
 {
   struct header head = {.fileName = "", .fileSize = 0};
   head = loadHeader(head, hardInput, hardInput_len, 0);
   printf("Filename: %s\n", head.fileName);
-  printf("File Size: %lu\n", head.fileSize);
+  printf("File Size: %u\n", head.fileSize);
   return SUCCESS;
 }
 
 struct header loadHeader(struct header head, unsigned char *input,
-			 unsigned int inputSize, unsigned long int offset)
+			 unsigned inputSize, unsigned offset)
 {
   void lskipComments() { offset = skipComments(input, inputSize, offset); }
   lskipComments();
@@ -48,7 +48,7 @@ struct header loadHeader(struct header head, unsigned char *input,
     printf("Header too short! Is this really a jacpatch?\n");
     exit(TOO_SHORT);
   }
-  if(strncmp(&input[offset], MAGIC, MAGIC_SIZE - 1)) {
+  if(memcmp(&input[offset], MAGIC, MAGIC_SIZE - 1)) {
     printf("Insufficient magic! Is this really a jacpatch?\n");
     exit(NO_MAGIC);
   }
@@ -68,7 +68,7 @@ struct header loadHeader(struct header head, unsigned char *input,
   // Get the filename.
   // We don't want to gobble the '\n' here.
   memset(head.fileName, '\0', MAX_FN_LEN); // Zero out filename.
-  for(unsigned long int i = 0;
+  for(unsigned i = 0;
       offset < inputSize &&
 	i <  MAX_FN_LEN - 2 &&
 	input[offset] != '\n';) head.fileName[i++] = input[offset++];
@@ -76,10 +76,9 @@ struct header loadHeader(struct header head, unsigned char *input,
 
   lskipComments();
   lcheckEnd();
-  printf("%lx\n", offset);
-  unsigned char asciiSize[MAX_ASCII_SIZE] = "";
+  char asciiSize[MAX_ASCII_SIZE] = "";
   memset(asciiSize, '\0', MAX_ASCII_SIZE); // Zero out filename.
-  for(unsigned long int i = 0;
+  for(unsigned  i = 0;
       offset < inputSize &&
 	i < MAX_ASCII_SIZE - 2 &&
 	input[offset] != '\n'; ++i) {
@@ -92,8 +91,8 @@ struct header loadHeader(struct header head, unsigned char *input,
 }
 
 unsigned long int skipComments(unsigned char *input,
-			       unsigned int inputSize,
-			       unsigned long int offset)
+			       unsigned inputSize,
+			       unsigned offset)
 {
   bool onCommentLine = input[offset] == ';';
   while(onCommentLine) {
@@ -104,7 +103,7 @@ unsigned long int skipComments(unsigned char *input,
   return offset;
 }
 
-void checkEnd(unsigned int inputSize, unsigned long int offset)
+void checkEnd(unsigned inputSize, unsigned offset)
 {
   if(offset >= inputSize) {
     printf("Unexpected end of patch!\n");
