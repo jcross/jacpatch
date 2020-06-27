@@ -1,5 +1,8 @@
+; Comment test.
 JACPATCH This is an example patch made by James Cross. It allows the DOS game God of Thunder to run on a NEC v20. It's largely redundant with got.jac.
+; Comment test.
 GOT.EXE
+; Comment test.
 389305
 ; JNZ 0x09 -> JMP 0x09
 ; This basically turns the failing conditional 286 check

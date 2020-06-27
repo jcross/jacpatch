@@ -28,7 +28,7 @@ unsigned long int skipComments(unsigned char *, unsigned int,
 
 int main()
 {
-  struct header head = {};
+  struct header head = {.fileName = "", .fileSize = 0};
   head = loadHeader(head, hardInput, hardInput_len, 0);
   printf("Filename: %s\n", head.fileName);
   printf("File Size: %lu\n", head.fileSize);
@@ -39,6 +39,8 @@ int main()
 struct header loadHeader(struct header head, unsigned char *input,
 			 unsigned int inputSize, unsigned long int offset)
 {
+  void eatComments() { offset = skipComments(input, inputSize, offset); }
+  eatComments();
   if(inputSize - offset < MAGIC_SIZE - 1) {
     printf("Header too short! Is this really a jacpatch?\n");
     exit(TOO_SHORT);
@@ -48,30 +50,28 @@ struct header loadHeader(struct header head, unsigned char *input,
     exit(NO_MAGIC);
   }
 
-  // offset = skipComments(input, inputSize, offset);
-  // TODO: Need something to eat comments!
-  
+  eatComments();
   // Print the message describing the patch.
   // input[offset-1] is used because we want to gobble the newline.
   for(offset = offset + MAGIC_SIZE;
       offset < inputSize && input[offset-1] != '\n';
-      offset = offset + 1) {
-    putc(input[offset], stdout);
+      ++offset) {
+    putchar(input[offset]);
   }
 
+  eatComments();
   // Get the filename.
   // We don't want to gobble the '\n' here.
   memset(head.fileName, '\0', sizeof(MAX_FN_LEN)); // Zero out filename.
-  for(unsigned int i = 0;
-      offset + i < inputSize &&
-	offset + i < offset + MAX_FN_LEN &&
-	input[offset + i] != '\n';
-      ++i) head.fileName[i] = input[offset + i];
+  for(unsigned long int i = 0;
+      offset < inputSize &&
+	i <  MAX_FN_LEN - 2 &&
+	input[offset] != '\n';) head.fileName[i++] = input[offset++];
+  ++offset; // Skip the newline.
 
-  offset = offset + strlen(head.fileName);
-
-  unsigned char asciiSize[MAX_ASCII_SIZE];
-  memset(asciiSize, '\0', MAX_ASCII_SIZE);
+  eatComments();
+  printf("%lx\n", offset);
+  unsigned char asciiSize[MAX_ASCII_SIZE] = "";
   // TODO: Read file size.
 
   head.valid = TRUE; // This probably isn't needed if exits are in place.
@@ -82,5 +82,11 @@ unsigned long int skipComments(unsigned char *input,
 			       unsigned int inputSize,
 			       unsigned long int offset)
 {
-  return 0;
+  bool onCommentLine = input[offset] == ';';
+  while(onCommentLine) {
+    for(; input[offset] != '\n' && offset < inputSize; ++offset);
+    ++offset;
+    onCommentLine = (offset == inputSize || input[offset] == ';');
+  }
+  return offset;
 }
