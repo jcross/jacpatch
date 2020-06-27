@@ -4,6 +4,8 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include "hardInput.h"
+#include "version.h"
+#include "pause.h"
 
 #define PRINT_COMMENTS true
 
@@ -35,6 +37,9 @@ unsigned applyTriplets(unsigned char *, unsigned, unsigned);
 
 int main()
 {
+  printf(BANNER, VERSION);
+  printf("Press any key to continue.\n");
+  pause();
   unsigned offset = 0;
   struct header head = {.fileName = "", .fileSize = 0, .end = 0};
   while(offset <= hardInput_len) {

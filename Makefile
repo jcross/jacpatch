@@ -12,7 +12,7 @@ linux:
 
 dos:
 	mkdir -p bind
-	ia16-elf-gcc -W -Wall -s -Os -march=any_186 -mtune=v20  -mcmodel=medium src/main.c -o bind/jacpatch
+	ia16-elf-gcc -W -Wall -s -Os -march=any_186 -mtune=v20  -mcmodel=medium src/main.c -o bind/jacpatch.exe -li86
 
 run: linux
 	./binl/jacpatch
