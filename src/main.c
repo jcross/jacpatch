@@ -5,6 +5,8 @@
 #include <stdbool.h>
 #include "hardInput.h"
 
+#define PRINT_COMMENTS true
+
 #define MAGIC "JACPATCH"
 #define MAGIC_SIZE sizeof(MAGIC)
 #define MAX_FN_LEN 256
@@ -96,7 +98,9 @@ unsigned long int skipComments(unsigned char *input,
 {
   bool onCommentLine = input[offset] == ';';
   while(onCommentLine) {
-    for(; input[offset] != '\n' && offset < inputSize; ++offset);
+    for(; input[offset] != '\n' && offset < inputSize; ++offset)
+      putchar(input[offset]);
+    if(PRINT_COMMENTS) putchar('\n');
     ++offset;
     onCommentLine = (offset == inputSize || input[offset] == ';');
   }
