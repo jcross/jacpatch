@@ -19,11 +19,13 @@
 #define TOO_SHORT 1
 #define NO_MAGIC 2
 #define EARLY_END 3
+#define NOT_FOUND 4
+#define WRONG_SIZE 5
 
 struct header {
   char fileName[MAX_FN_LEN];
-  unsigned fileSize;
-  unsigned end;
+  int fileSize;
+  int end;
 };
 
 // Pre-define functions.
@@ -33,4 +35,6 @@ unsigned skipComments(unsigned char *, unsigned,
 		      unsigned);
 void checkEnd(unsigned, unsigned);
 
-unsigned applyTriplets(unsigned char *, unsigned, unsigned);
+unsigned applyTriplets(FILE *, unsigned char *, unsigned, unsigned);
+
+FILE * openFile(struct header);

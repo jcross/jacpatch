@@ -12,9 +12,10 @@ int main()
     printf("Filename: %s\n", head.fileName);
     printf("File Size: %u\n", head.fileSize);
     printf("Header end: %u\n", head.end);
-    offset = head.end + 1;
-    // printf("Next char: %c\n", hardInput[head.end + 1]);
-    offset = applyTriplets(hardInput, hardInput_len, offset);
+
+    FILE *file = openFile(head);
+    offset = applyTriplets(file, hardInput, hardInput_len, head.end + 1);
+    fclose(file);
   }
   return SUCCESS;
 }
@@ -73,9 +74,11 @@ struct header loadHeader(struct header head, unsigned char *input,
   return head;
 }
 
-unsigned applyTriplets(unsigned char *input,
-		      unsigned inputSize,
-		      unsigned offset)
+unsigned applyTriplets(FILE *file,
+		       unsigned char *input,
+		       unsigned inputSize,
+		       unsigned offset)
+		       
 {
   void lskipComments() { offset = skipComments(input, inputSize, offset); }
   lskipComments();
@@ -85,8 +88,8 @@ unsigned applyTriplets(unsigned char *input,
 }
 
 unsigned skipComments(unsigned char *input,
-			       unsigned inputSize,
-			       unsigned offset)
+		      unsigned inputSize,
+		      unsigned offset)
 {
   bool onCommentLine = input[offset] == ';';
   while(onCommentLine) {
@@ -107,3 +110,20 @@ void checkEnd(unsigned inputSize, unsigned offset)
   }
 }
    
+FILE * openFile(struct header head) {
+  FILE *file = fopen(head.fileName, "r+b");
+  if(file == NULL) {
+    fclose(file);
+    printf("Unable to open expected file: %s\n", head.fileName);
+    exit(NOT_FOUND);
+  }
+  fseek(file, 0, SEEK_END); // Cross-platform trick to find file size.
+  int fileSize = ftell(file);
+  if(fileSize != head.fileSize) {
+    fclose(file);
+    printf("File size mismatch: %d!\n", fileSize);
+    exit(WRONG_SIZE);
+  }
+  rewind(file);
+  return file;
+}
