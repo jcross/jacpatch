@@ -21,21 +21,31 @@
 struct header {
   char fileName[MAX_FN_LEN];
   unsigned fileSize;
+  unsigned end;
 };
 
+// Pre-define functions.
 struct header loadHeader(struct header, unsigned char *,
 			 unsigned, unsigned);
-
-unsigned long int skipComments(unsigned char *, unsigned,
-			       unsigned);
+unsigned skipComments(unsigned char *, unsigned,
+		      unsigned);
 void checkEnd(unsigned, unsigned);
+
+unsigned applyTriplets(unsigned char *, unsigned, unsigned);
 
 int main()
 {
-  struct header head = {.fileName = "", .fileSize = 0};
-  head = loadHeader(head, hardInput, hardInput_len, 0);
-  printf("Filename: %s\n", head.fileName);
-  printf("File Size: %u\n", head.fileSize);
+  unsigned offset = 0;
+  struct header head = {.fileName = "", .fileSize = 0, .end = 0};
+  while(offset <= hardInput_len) {
+    head = loadHeader(head, hardInput, hardInput_len, offset);
+    printf("Filename: %s\n", head.fileName);
+    printf("File Size: %u\n", head.fileSize);
+    printf("Header end: %u\n", head.end);
+    offset = head.end + 1;
+    // printf("Next char: %c\n", hardInput[head.end + 1]);
+    offset = applyTriplets(hardInput, hardInput_len, offset);
+  }
   return SUCCESS;
 }
 
@@ -88,11 +98,23 @@ struct header loadHeader(struct header head, unsigned char *input,
     ++offset;
   }
   head.fileSize = strtoul(asciiSize, NULL, 10);
+  head.end = offset;
 
   return head;
 }
 
-unsigned long int skipComments(unsigned char *input,
+unsigned applyTriplets(unsigned char *input,
+		      unsigned inputSize,
+		      unsigned offset)
+{
+  void lskipComments() { offset = skipComments(input, inputSize, offset); }
+  lskipComments();
+  void lcheckEnd() { checkEnd(inputSize, offset); }
+  lcheckEnd();
+  return inputSize;
+}
+
+unsigned skipComments(unsigned char *input,
 			       unsigned inputSize,
 			       unsigned offset)
 {
