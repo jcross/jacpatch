@@ -61,14 +61,14 @@ struct header loadHeader(struct header head, unsigned char *input,
   lcheckEnd();
   char asciiSize[MAX_ASCII_SIZE] = "";
   memset(asciiSize, '\0', MAX_ASCII_SIZE); // Zero out filename.
-  for(unsigned  i = 0;
+  for(unsigned i = 0;
       offset < inputSize &&
 	i < MAX_ASCII_SIZE - 2 &&
 	input[offset] != '\n'; ++i) {
     if(isdigit(input[offset])) asciiSize[i] = input[offset];
     ++offset;
   }
-  head.fileSize = strtoul(asciiSize, NULL, 10);
+  head.fileSize = strtol(asciiSize, NULL, 10);
   head.end = offset;
 
   return head;
@@ -84,6 +84,21 @@ unsigned applyTriplets(FILE *file,
   lskipComments();
   void lcheckEnd() { checkEnd(inputSize, offset); }
   lcheckEnd();
+
+  char tripletAsciiOffset[MAX_ASCII_SIZE] = "";
+  memset(tripletAsciiOffset, '\0', MAX_ASCII_SIZE); // Zero out string.
+  for(int i = 0;
+      offset < inputSize &&
+	i < MAX_ASCII_SIZE - 2 &&
+	input[offset] != '\n'; ++offset) {
+    if(isxdigit(input[offset])) {
+      tripletAsciiOffset[i] = input[offset];
+      ++i;
+    }
+  }
+  int tripletOffset = strtol(tripletAsciiOffset, NULL, 16);
+  printf("Found triplet pointing to %s!\n", tripletAsciiOffset);
+
   return inputSize;
 }
 

@@ -12,7 +12,7 @@
 #define MAGIC "JACPATCH"
 #define MAGIC_SIZE sizeof(MAGIC)
 #define MAX_FN_LEN 256
-#define MAX_ASCII_SIZE 10
+#define MAX_ASCII_SIZE 256
 
 // Exit codes.
 #define SUCCESS 0
