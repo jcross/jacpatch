@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "bool.h" // Bool is C99+
 #include "hardInput.h"
 
@@ -13,11 +14,11 @@
 #define SUCCESS 0
 #define TOO_SHORT 1
 #define NO_MAGIC 2
+#define EARLY_END 3
 
 struct header {
   unsigned char fileName[MAX_FN_LEN];
   unsigned long int fileSize;
-  bool valid;
 };
 
 struct header loadHeader(struct header, unsigned char *,
@@ -25,6 +26,7 @@ struct header loadHeader(struct header, unsigned char *,
 
 unsigned long int skipComments(unsigned char *, unsigned int,
 			       unsigned long int);
+void checkEnd(unsigned int, unsigned long int);
 
 int main()
 {
@@ -32,15 +34,16 @@ int main()
   head = loadHeader(head, hardInput, hardInput_len, 0);
   printf("Filename: %s\n", head.fileName);
   printf("File Size: %lu\n", head.fileSize);
-  printf("Header Valid: %d\n", head.valid);
   return SUCCESS;
 }
 
 struct header loadHeader(struct header head, unsigned char *input,
 			 unsigned int inputSize, unsigned long int offset)
 {
-  void eatComments() { offset = skipComments(input, inputSize, offset); }
-  eatComments();
+  void lskipComments() { offset = skipComments(input, inputSize, offset); }
+  lskipComments();
+  void lcheckEnd() { checkEnd(inputSize, offset); }
+  lcheckEnd();
   if(inputSize - offset < MAGIC_SIZE - 1) {
     printf("Header too short! Is this really a jacpatch?\n");
     exit(TOO_SHORT);
@@ -50,7 +53,8 @@ struct header loadHeader(struct header head, unsigned char *input,
     exit(NO_MAGIC);
   }
 
-  eatComments();
+  lskipComments();
+  lcheckEnd();
   // Print the message describing the patch.
   // input[offset-1] is used because we want to gobble the newline.
   for(offset = offset + MAGIC_SIZE;
@@ -59,22 +63,31 @@ struct header loadHeader(struct header head, unsigned char *input,
     putchar(input[offset]);
   }
 
-  eatComments();
+  lskipComments();
+  lcheckEnd();
   // Get the filename.
   // We don't want to gobble the '\n' here.
-  memset(head.fileName, '\0', sizeof(MAX_FN_LEN)); // Zero out filename.
+  memset(head.fileName, '\0', MAX_FN_LEN); // Zero out filename.
   for(unsigned long int i = 0;
       offset < inputSize &&
 	i <  MAX_FN_LEN - 2 &&
 	input[offset] != '\n';) head.fileName[i++] = input[offset++];
   ++offset; // Skip the newline.
 
-  eatComments();
+  lskipComments();
+  lcheckEnd();
   printf("%lx\n", offset);
   unsigned char asciiSize[MAX_ASCII_SIZE] = "";
-  // TODO: Read file size.
+  memset(asciiSize, '\0', MAX_ASCII_SIZE); // Zero out filename.
+  for(unsigned long int i = 0;
+      offset < inputSize &&
+	i < MAX_ASCII_SIZE - 2 &&
+	input[offset] != '\n'; ++i) {
+    if(isdigit(input[offset])) asciiSize[i] = input[offset];
+    ++offset;
+  }
+  head.fileSize = strtoul(asciiSize, NULL, 10);
 
-  head.valid = TRUE; // This probably isn't needed if exits are in place.
   return head;
 }
 
@@ -90,3 +103,12 @@ unsigned long int skipComments(unsigned char *input,
   }
   return offset;
 }
+
+void checkEnd(unsigned int inputSize, unsigned long int offset)
+{
+  if(offset >= inputSize) {
+    printf("Unexpected end of patch!\n");
+    exit(EARLY_END);
+  }
+}
+   
