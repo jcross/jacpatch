@@ -1,5 +1,5 @@
 ; Comment test.
-JACPATCH This is an example patch made by James Cross. It allows the DOS game God of Thunder to run on a NEC v20. It's largely redundant with got.jac.
+JACPATCH This is an example patch made. The first patch fixes God of Thunder to work on a NEC v20.
 ; Comment test.
 GOT.EXE
 ; Comment test.
@@ -12,3 +12,10 @@ GOT.EXE
 0d 52
 79 09
 eb 09
+; Start a new file.
+JACPATCH This part of the example changes a file that says "Derp!" to say "Ferp!"
+derp.txt
+6
+00
+44
+46

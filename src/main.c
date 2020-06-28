@@ -81,7 +81,11 @@ long applyTriplets(FILE *file, struct header head,
 		   long inputSize,
 		   long offset)
 {
-  return applyTriplet(file, head, input, inputSize, offset);
+  while(offset < inputSize && input[offset] != MAGIC[0]) {
+    offset = applyTriplet(file, head, input, inputSize, offset);
+    printf("Char at offset: %c\n", input[offset]);
+  }
+  return offset;
 }
 
 long applyTriplet(FILE *file, struct header head,
@@ -159,8 +163,9 @@ long applyTriplet(FILE *file, struct header head,
   }
   printf("Done!\n");
 
+  ++offset;
   lskipComments();
-  return offset + 1;
+  return offset;
 }
 
 long skipComments(unsigned char *input,
