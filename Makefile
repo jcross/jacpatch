@@ -11,6 +11,7 @@ clean:
 	rm -rf $(LINDIR)
 	rm -rf $(DOSDIR)
 	rm -f hardInput
+	rm -f src/hardInput.h
 
 
 linux: $(BINLS)
@@ -27,6 +28,7 @@ $(LINDIR)/%: $(PATCHDIR)/%.jac | $(LINDIR)
 	xxd -i hardInput > src/hardInput.h
 	gcc src/main.c  -W -Wall -s -Os -o $@
 	rm hardInput
+	rm src/hardInput.h
 
 
 $(DOSDIR)/%.exe: $(PATCHDIR)/%.jac | $(DOSDIR)
@@ -34,3 +36,4 @@ $(DOSDIR)/%.exe: $(PATCHDIR)/%.jac | $(DOSDIR)
 	xxd -i hardInput > src/hardInput.h
 	ia16-elf-gcc -W -Wall -s -Os -mcmodel=small src/main.c -o $@ -li86
 	rm hardInput
+	rm src/hardInput.h
