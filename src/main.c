@@ -11,7 +11,6 @@ int main()
     head = loadHeader(head, hardInput, hardInput_len, offset);
     printf("Filename: %s\n", head.fileName);
     printf("File Size: %lu\n", head.fileSize);
-    printf("Header end: %lu\n", head.end);
 
     FILE *file = openFile(head);
     offset = applyTriplets(file, head, hardInput,
@@ -83,7 +82,6 @@ long applyTriplets(FILE *file, struct header head,
 {
   while(offset < inputSize && input[offset] != MAGIC[0]) {
     offset = applyTriplet(file, head, input, inputSize, offset);
-    printf("Char at offset: %c\n", input[offset]);
   }
   return offset;
 }
