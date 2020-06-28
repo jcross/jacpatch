@@ -1,20 +1,36 @@
-patches = $(wildcard patches/*.jac)
+PATCHDIR := patches
+DOSDIR := bind
+LINDIR := binl
+PATCHES := $(wildcard $(PATCHDIR)/*.jac)
+BINDS := $(addprefix $(DOSDIR)/, $(notdir $(PATCHES:.jac=.exe)))
+BINLS := $(addprefix $(LINDIR)/, $(notdir $(PATCHES:.jac=)))
 
-all: dos linux
+all: linux dos
 
 clean:
-	rm -r binl
-	rm -r bind
+	rm -rf $(LINDIR)
+	rm -rf $(DOSDIR)
+	rm -f hardInput
 
-linux:
-	mkdir -p binl
-	gcc src/main.c -W -Wall -s -Os -o binl/jacpatch
 
-dos:
-	mkdir -p bind
-	ia16-elf-gcc -W -Wall -s -Os -mcmodel=small src/main.c -o bind/jacpatch.exe -li86
+linux: $(BINLS)
+dos: $(BINDS)
 
-run: linux
-	./binl/jacpatch
+$(LINDIR):
+	mkdir $(LINDIR)
 
-# ln -s patches/example.jac hardInput; xxd -i hardInput > src/hardInput.h
+$(DOSDIR):
+	mkdir $(DOSDIR)
+
+$(LINDIR)/%: $(PATCHDIR)/%.jac | $(LINDIR)
+	ln -s $< hardInput
+	xxd -i hardInput > src/hardInput.h
+	gcc src/main.c  -W -Wall -s -Os -o $@
+	rm hardInput
+
+
+$(DOSDIR)/%.exe: $(PATCHDIR)/%.jac | $(DOSDIR)
+	ln -s $< hardInput
+	xxd -i hardInput > src/hardInput.h
+	ia16-elf-gcc -W -Wall -s -Os -mcmodel=small src/main.c -o $@ -li86
+	rm hardInput
