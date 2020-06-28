@@ -4,7 +4,7 @@ A tool for making stand-alone binary patch programs that will run under 16-bit D
 # Existing patches.
 Check out [releases](https://github.com/jcross/jacpatch/releases) for pre-made binaries.
 
-* gotv20.jac - Patches the freeware version of Adept Software's God of Thunder to run on a NEC v20. Performance is reasonable at 9.55 MHz but does bog down a bit on very active screens. If you don't have a copy, you can grab one for free from Adept Software [here](https://www.adeptsoftware.com/got/).
+* **gotv20.jac** - Patches the freeware version of Adept Software's God of Thunder to run on a NEC v20. Performance is reasonable at 9.55 MHz but does bog down a bit on very active screens. If you don't have a copy, you can grab one for free from Adept Software [here](https://www.adeptsoftware.com/got/).
 
 # .jac format.
 The patch files should be somewhat human readable.
