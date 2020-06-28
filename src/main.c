@@ -5,13 +5,13 @@ int main()
   printf(BANNER, VERSION);
   printf("Press any key to continue.\n");
   pause();
-  unsigned offset = 0;
+  long offset = 0;
   struct header head = {.fileName = "", .fileSize = 0, .end = 0};
   while(offset < hardInput_len) {
     head = loadHeader(head, hardInput, hardInput_len, offset);
     printf("Filename: %s\n", head.fileName);
-    printf("File Size: %u\n", head.fileSize);
-    printf("Header end: %u\n", head.end);
+    printf("File Size: %lu\n", head.fileSize);
+    printf("Header end: %lu\n", head.end);
 
     FILE *file = openFile(head);
     offset = applyTriplets(file, head, hardInput,
@@ -23,7 +23,7 @@ int main()
 }
 
 struct header loadHeader(struct header head, unsigned char *input,
-			 unsigned inputSize, unsigned offset)
+			 long inputSize, long offset)
 {
   void lskipComments() { offset = skipComments(input, inputSize, offset); }
   lskipComments();
@@ -53,7 +53,7 @@ struct header loadHeader(struct header head, unsigned char *input,
   // Get the filename.
   // We don't want to gobble the '\n' here.
   memset(head.fileName, '\0', MAX_FN_LEN); // Zero out filename.
-  for(unsigned i = 0;
+  for(long i = 0;
       offset < inputSize &&
 	i <  MAX_FN_LEN - 2 &&
 	input[offset] != '\n';) head.fileName[i++] = input[offset++];
@@ -63,23 +63,31 @@ struct header loadHeader(struct header head, unsigned char *input,
   lcheckEnd();
   char asciiSize[MAX_ASCII_SIZE] = "";
   memset(asciiSize, '\0', MAX_ASCII_SIZE); // Zero out filename.
-  for(unsigned i = 0;
+  for(long i = 0;
       offset < inputSize &&
 	i < MAX_ASCII_SIZE - 2 &&
 	input[offset] != '\n'; ++i) {
     if(isdigit(input[offset])) asciiSize[i] = input[offset];
     ++offset;
   }
-  head.fileSize = strtol(asciiSize, NULL, 10);
+  head.fileSize = strtoul(asciiSize, NULL, 10);
   head.end = offset;
 
   return head;
 }
 
-unsigned applyTriplets(FILE *file, struct header head,
-		       unsigned char *input,
-		       unsigned inputSize,
-		       unsigned offset)
+long applyTriplets(FILE *file, struct header head,
+		   unsigned char *input,
+		   long inputSize,
+		   long offset)
+{
+  return applyTriplet(file, head, input, inputSize, offset);
+}
+
+long applyTriplet(FILE *file, struct header head,
+		  unsigned char *input,
+		  long inputSize,
+		  long offset)
 		       
 {
   void lskipComments() { offset = skipComments(input, inputSize, offset); }
@@ -89,7 +97,7 @@ unsigned applyTriplets(FILE *file, struct header head,
 
   char tripletAsciiOffset[MAX_ASCII_SIZE] = "";
   memset(tripletAsciiOffset, '\0', MAX_ASCII_SIZE); // Zero out string.
-  for(int i = 0;
+  for(long i = 0;
       offset < inputSize &&
 	i < MAX_ASCII_SIZE - 2 &&
 	input[offset] != '\n'; ++offset) {
@@ -98,7 +106,7 @@ unsigned applyTriplets(FILE *file, struct header head,
       ++i;
     }
   }
-  int tripletOffset = strtoul(tripletAsciiOffset, NULL, 16);
+  long tripletOffset = strtol(tripletAsciiOffset, NULL, 16);
   printf("Found triplet pointing to %s!\n", tripletAsciiOffset);
 
   if(tripletOffset > head.fileSize) {
@@ -119,9 +127,9 @@ unsigned applyTriplets(FILE *file, struct header head,
     if(!aHB[0] && isxdigit(input[offset])) { // No nibbles yet.
       aHB[0] = input[offset];
     } else if(aHB[0] && isxdigit(input[offset])) {
-      aHB[1]  = input[offset];
+      aHB[1] = input[offset];
       expectedByte = strtoul(aHB, NULL, 16);
-      foundByte = getc(file);
+      foundByte = fgetc(file);
       if(foundByte != expectedByte) {
 	printf("Found %x instead of %x at %lx!\n", foundByte,
 	       expectedByte, ftell(file) - 1);
@@ -145,7 +153,7 @@ unsigned applyTriplets(FILE *file, struct header head,
     } else if(aHB[0] && isxdigit(input[offset])) {
       aHB[1]  = input[offset];
       newByte = strtoul(aHB, NULL, 16);
-      putc(newByte, file);
+      fputc(newByte, file);
       memset(aHB, '\0', 3);
     }
   }
@@ -155,9 +163,9 @@ unsigned applyTriplets(FILE *file, struct header head,
   return offset + 1;
 }
 
-unsigned skipComments(unsigned char *input,
-		      unsigned inputSize,
-		      unsigned offset)
+long skipComments(unsigned char *input,
+		  long inputSize,
+		  long offset)
 {
   bool onCommentLine = input[offset] == ';';
   while(onCommentLine) {
@@ -170,7 +178,7 @@ unsigned skipComments(unsigned char *input,
   return offset;
 }
 
-void checkEnd(unsigned inputSize, unsigned offset)
+void checkEnd(long inputSize, long offset)
 {
   if(offset >= inputSize) {
     printf("Unexpected end of patch!\n");
@@ -180,23 +188,28 @@ void checkEnd(unsigned inputSize, unsigned offset)
    
 FILE * openFile(struct header head) {
   FILE *file = fopen(head.fileName, "r+b");
+
   if(file == NULL) {
     fclose(file);
     printf("Unable to open expected file: %s\n", head.fileName);
     exit(NOT_FOUND);
   }
-  fseek(file, 0, SEEK_END); // Cross-platform trick to find file size.
-  int fileSize = ftell(file);
+
+  fseek(file, 0, SEEK_END);
+  long fileSize = ftell(file);
+  fseek(file, 0, SEEK_SET);
+
   if(fileSize != head.fileSize) {
     fclose(file);
-    printf("File size mismatch: %d!\n", fileSize);
+    printf("File size mismatch: %ld!\n", fileSize);
     exit(WRONG_SIZE);
   }
-  rewind(file);
+
   return file;
 }
 
-int fseekAbs(FILE *file, int offset) {
-  rewind(file);
-  return fseek(file, offset, SEEK_CUR);
+void fseekAbs(FILE *file, long offset) {
+  // fseek and tell seem completely fucking broken in ia-16 DOS.
+  fseek(file, offset, SEEK_SET);
+  return;
 }

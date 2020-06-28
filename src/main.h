@@ -10,7 +10,7 @@
 #define PRINT_COMMENTS true
 
 #define MAGIC "JACPATCH"
-#define MAGIC_SIZE sizeof(MAGIC)
+#define MAGIC_SIZE (long)sizeof(MAGIC)
 #define MAX_FN_LEN 256
 #define MAX_ASCII_SIZE 256
 
@@ -26,20 +26,23 @@
 
 struct header {
   char fileName[MAX_FN_LEN];
-  int fileSize;
-  int end;
+  long fileSize;
+  long end;
 };
 
 // Pre-define functions.
 struct header loadHeader(struct header, unsigned char *,
-			 unsigned, unsigned);
-unsigned skipComments(unsigned char *, unsigned,
-		      unsigned);
-void checkEnd(unsigned, unsigned);
+			 long, long);
+long skipComments(unsigned char *, long,
+		      long);
+void checkEnd(long, long);
 
-unsigned applyTriplets(FILE *, struct header,
-		       unsigned char *, unsigned, unsigned);
+long applyTriplets(FILE *, struct header,
+		   unsigned char *, long, long);
+
+long applyTriplet(FILE *, struct header,
+		  unsigned char *, long, long);
 
 FILE * openFile(struct header);
 
-int fseekAbs(FILE *, int);
+void fseekAbs(FILE *, long);
