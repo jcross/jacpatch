@@ -5,7 +5,8 @@ A tool for making stand-alone binary patch programs that will run under 16-bit D
 Pre-made 16-bit DOS binaries live [here](https://github.com/jcross/jacpatch/releases/tag/DOSBinaries/) for your convenience.
 
 * [**gotv20.jac**](https://github.com/jcross/jacpatch/blob/master/patches/gotv20.jac) - Patches the freeware version of Adept Software's God of Thunder to run on a NEC v20. Performance is reasonable at 9.55 MHz but does bog down a bit on very active screens. If you don't have a copy, you can grab one for free from Adept Software [here](https://www.adeptsoftware.com/got/).
-* [**w3dswv20.jac**](https://github.com/jcross/jacpatch/blob/master/patches/w3dswv20.jac) - Patches the 1.4 shareware version of Wolfestein 3D to run on a NEC v20. Even at 9.55 MHZ with a 2MB EMS card, performance is pretty bad unless you shrink the size of the viewport quite a lot. Choose between a slideshow and postage stamp.
+* [**w3dflv20.jac**](https://github.com/jcross/jacpatch/blob/master/patches/w3dflv20.jac) - Patches the 1.4 full version of Wolfenstein 3D to run on a NEC v20. Even at 9.55 MHZ with a 2MB EMS card, performance is pretty bad unless you shrink the size of the viewport quite a lot. Choose between a slideshow and postage stamp.
+* [**w3dswv20.jac**](https://github.com/jcross/jacpatch/blob/master/patches/w3dswv20.jac) - Patches the 1.4 shareware version of Wolfenstein 3D to run on a NEC v20. The situation is similar to the full patch above.
 
 # .jac format.
 The patch files should be somewhat human readable.
