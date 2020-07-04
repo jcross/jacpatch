@@ -1,4 +1,4 @@
-JACPATCH This is a patch to allow the 1.4 shareware version of Wolfenstein 3D to run on a NEC v20.
+JACPATCH This is a patch to allow the 1.4 shareware version of Wolfenstein 3D to run on a NEC v20. Unfortunately, because we're patching a packed EXE, this probably has unknown side effects.
 WOLF3D.EXE
 109959
 ; JNZ 0x0a -> JMP 0x0a
