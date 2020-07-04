@@ -192,8 +192,7 @@ void checkEnd(long inputSize, long offset)
 FILE * openFile(struct header head) {
   FILE *file = fopen(head.fileName, "r+b");
 
-  if(file == NULL) {
-    fclose(file);
+  if(!file) {
     printf("Unable to open expected file: %s\n", head.fileName);
     exit(NOT_FOUND);
   }
